@@ -1,11 +1,19 @@
 {
-  "HomePage": {
-    "title": "To get started, edit the <code>page.tsx</code> file.",
-    "description": "Looking for a starting point or more instructions? Head over to <templates>Templates</templates> or the <learning>Learning</learning> center.",
-    "deploy": "Deploy Now",
-    "docs": "Documentation"
+  "Nav": {
+    "label": "Main navigation",
+    "manifesto": "MANIFESTO",
+    "openings": "UPCOMING LOCATIONS",
+    "where": "WHERE ARE WE?",
+    "franchise": "FRANCHISE",
+    "contact": "CONTACT",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "Hero": {
+    "menuSoon": "Coming very soon"
   },
   "LocaleSwitcher": {
+    "label": "Change language",
     "es": "ES",
     "en": "EN"
   }

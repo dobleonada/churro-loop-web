@@ -56,6 +56,13 @@ Tailwind defaults, used as: base = mobile (390), `md` = tablet (768+),
 `lg` = desktop (1024+). The desktop navigation only fits from `lg`, so the
 hamburger + full-screen overlay covers everything below it.
 
+### Hero height
+
+The hero declares `--hero-h: min(100svh, 900px)` and uses it as its
+`min-height`: full viewport height, capped at 900px so it doesn't stretch on
+tall desktop screens. The decorative churro is sized off the same variable, so
+the composition scales as one piece.
+
 ### Stripes
 
 `bg-churro-stripes` is an `@utility` driven by `--stripe-width`, set per
@@ -116,7 +123,7 @@ Anything the CMS does not serve goes in `public/` and is listed here:
 
 | Path | Status | Notes |
 |---|---|---|
-| `public/images/hero-churro.png` | **missing** | Decorative chocolate-dipped churro that bleeds off the hero. Needs a transparent PNG (or two crops: it enters from the bottom-right on desktop and from the top-right on mobile). Positioning in `src/components/sections/hero.tsx` is provisional until the real asset lands. |
+| `public/images/hero-churro.png` | present | 1120×1815 RGBA. One asset for both breakpoints: desktop uses it as-is, mobile mirrors it horizontally (`-scale-x-100`). Scale and offsets in `src/components/sections/hero.tsx` were calibrated by matching the shaft width against the mockups; see the comment on `HeroChurro`. |
 | `public/og-image.png` | **missing** | 1200×630 raster for Open Graph. The CMS `seo.metaImage` is an SVG, which social platforms don't render, so `src/lib/seo.ts` falls back to this file. |
 | `public/favicon.ico` / app icons | **pending** | Currently the `create-next-app` default at `src/app/favicon.ico`. |
 

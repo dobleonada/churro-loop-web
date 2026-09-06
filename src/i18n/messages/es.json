@@ -1,11 +1,19 @@
 {
-  "HomePage": {
-    "title": "Para empezar, edita el archivo <code>page.tsx</code>.",
-    "description": "¿Buscas un punto de partida o más instrucciones? Visita las <templates>Plantillas</templates> o el centro de <learning>Aprendizaje</learning>.",
-    "deploy": "Desplegar ahora",
-    "docs": "Documentación"
+  "Nav": {
+    "label": "Navegación principal",
+    "manifesto": "MANIFIESTO",
+    "openings": "PRÓXIMAS APERTURAS",
+    "where": "¿DÓNDE ESTAMOS?",
+    "franchise": "FRANQUICIA",
+    "contact": "CONTACTO",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú"
+  },
+  "Hero": {
+    "menuSoon": "Disponible muy pronto"
   },
   "LocaleSwitcher": {
+    "label": "Cambiar idioma",
     "es": "ES",
     "en": "EN"
   }
