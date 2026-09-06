@@ -29,13 +29,23 @@
   --text-nav--line-height: 1;
   --text-nav--letter-spacing: 0.08em;
 
+  /* Overlay labels on cards (city, opening date) */
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.2;
+  --text-label--letter-spacing: 0.08em;
+
   --text-button: 0.75rem;
   --text-button--line-height: 1;
   --text-button--letter-spacing: 0.14em;
 
-  --text-eyebrow: 0.875rem;
+  /* Section eyebrow: 12px @390 → 20px @1440 */
+  --text-eyebrow: clamp(0.75rem, 1.39vw, 1.25rem);
   --text-eyebrow--line-height: 1.2;
-  --text-eyebrow--letter-spacing: 0.06em;
+  --text-eyebrow--letter-spacing: 0.16em;
+
+  /* Body copy inside sections: 15px @390 → 16px @1440 */
+  --text-copy: clamp(0.9375rem, 1.11vw, 1rem);
+  --text-copy--line-height: 1.35;
 
   /* "WELCOME TO" / "THE NEW SPANISH ICON": 24px @390 → 48px @1440 */
   --text-hero-lead: clamp(1.5rem, 3.34vw, 3rem);
@@ -45,7 +55,8 @@
   --text-hero-body: clamp(1.0625rem, 1.95vw, 1.75rem);
   --text-hero-body--line-height: 1.35;
 
-  --text-h2: clamp(2.25rem, 5vw, 3.5rem);
+  /* Section heading: 38px @390 → 60px @1440 */
+  --text-h2: clamp(2.375rem, 4.17vw, 3.75rem);
   --text-h2--line-height: 1.05;
   --text-h3: clamp(1.5rem, 3vw, 2rem);
   --text-body: 1rem;
@@ -54,7 +65,7 @@
 
   /* Layout */
   --spacing-section: clamp(4rem, 9vw, 8rem);
-  --radius-card: 1.25rem;
+  --radius-card: 0.75rem; /* measured on the openings cards */
   --container-site: 1440px;
 }
 

@@ -12,6 +12,13 @@
   "Hero": {
     "menuSoon": "Coming very soon"
   },
+  "Carousel": {
+    "roleDescription": "carousel",
+    "slideRoleDescription": "slide",
+    "slide": "{index} of {total}",
+    "previous": "Previous",
+    "next": "Next"
+  },
   "LocaleSwitcher": {
     "label": "Change language",
     "es": "ES",

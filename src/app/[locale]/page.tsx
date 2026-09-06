@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { Hero } from "@/components/sections/hero";
+import { Manifesto } from "@/components/sections/manifesto";
+import { PhotoStrip } from "@/components/sections/photo-strip";
+import { UpcomingOpenings } from "@/components/sections/upcoming-openings";
 import { routing } from "@/i18n/routing";
 import { buildMetadata, organizationJsonLd } from "@/lib/seo";
 import { getHomePage } from "@/services/home/home.service";
@@ -46,6 +49,9 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Hero hero={home.hero} />
+      <PhotoStrip gallery={home.gallery} />
+      <Manifesto manifesto={home.manifesto} />
+      <UpcomingOpenings openings={home.openings} />
     </>
   );
 }

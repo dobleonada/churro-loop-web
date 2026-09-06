@@ -13,6 +13,14 @@
  */
 export type MenuMode = "hidden" | "soon" | "link";
 
+/**
+ * Brand name, used where the design typesets it as an eyebrow rather than
+ * showing the logo lockup (the manifesto, for instance). It is an identity
+ * constant, not copy: it is identical in both locales, which is why it does
+ * not live in the message catalogs.
+ */
+export const BRAND_NAME = "Churro Loop";
+
 function parseMenuMode(value: string | undefined): MenuMode {
   return value === "hidden" || value === "link" || value === "soon"
     ? value
