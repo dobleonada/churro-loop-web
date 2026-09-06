@@ -28,9 +28,10 @@ interface CarouselProps {
   /** Accessible name for the carousel region — usually the section heading. */
   ariaLabel: string;
   /**
-   * Slides per view and gutter are read from `--slides` and `--slide-gap`, so
-   * callers set them per breakpoint with arbitrary properties, e.g.
-   * `[--slides:2] [--slide-gap:9px] lg:[--slides:3] lg:[--slide-gap:28px]`.
+   * Slides per view, gutter and arrow offset are read from `--slides`,
+   * `--slide-gap` and `--arrow-inset`, so callers set them per breakpoint with
+   * arbitrary properties, e.g.
+   * `[--slides:2] [--slide-gap:9px] [--arrow-inset:4px] lg:[--slides:3]`.
    * Horizontal padding on the root is what leaves room for the arrows.
    */
   className?: string;
@@ -90,7 +91,7 @@ export function Carousel({ items, ariaLabel, className }: CarouselProps) {
         aria-label={t("previous")}
         disabled={!canScrollPrevious}
         onClick={() => emblaApi?.scrollPrev()}
-        className={cn(arrowClassName, "left-0 lg:left-6")}
+        className={cn(arrowClassName, "left-[var(--arrow-inset,0px)]")}
       >
         <Chevron direction="previous" />
       </button>
@@ -116,7 +117,7 @@ export function Carousel({ items, ariaLabel, className }: CarouselProps) {
         aria-label={t("next")}
         disabled={!canScrollNext}
         onClick={() => emblaApi?.scrollNext()}
-        className={cn(arrowClassName, "right-0 lg:right-6")}
+        className={cn(arrowClassName, "right-[var(--arrow-inset,0px)]")}
       >
         <Chevron direction="next" />
       </button>

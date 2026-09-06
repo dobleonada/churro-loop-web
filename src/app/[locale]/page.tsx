@@ -3,6 +3,7 @@ import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { Hero } from "@/components/sections/hero";
 import { Manifesto } from "@/components/sections/manifesto";
+import { OurLoops } from "@/components/sections/our-loops";
 import { PhotoStrip } from "@/components/sections/photo-strip";
 import { UpcomingOpenings } from "@/components/sections/upcoming-openings";
 import { routing } from "@/i18n/routing";
@@ -52,6 +53,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
       <PhotoStrip gallery={home.gallery} />
       <Manifesto manifesto={home.manifesto} />
       <UpcomingOpenings openings={home.openings} />
+      <OurLoops loops={home.loops} />
     </>
   );
 }

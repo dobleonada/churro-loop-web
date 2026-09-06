@@ -64,7 +64,7 @@ export function UpcomingOpenings({ openings }: { openings: OpeningsDto }) {
         items={openings.openings.map((opening) => (
           <OpeningCard key={opening.id} opening={opening} />
         ))}
-        className="mx-auto mt-8 max-w-site px-5 [--slide-gap:9px] [--slides:2] md:px-10 md:[--slide-gap:16px] md:[--slides:3] lg:mt-13 lg:px-16 lg:[--slide-gap:28px]"
+        className="mx-auto mt-8 max-w-site px-5 [--arrow-inset:4px] [--slide-gap:9px] [--slides:2] md:px-10 md:[--slide-gap:16px] md:[--slides:3] lg:mt-13 lg:px-16 lg:[--arrow-inset:24px] lg:[--slide-gap:28px]"
       />
     </section>
   );
