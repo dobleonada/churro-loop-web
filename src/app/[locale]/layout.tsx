@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
@@ -60,6 +61,7 @@ export default async function RootLayout({
           <main className="flex-1">{children}</main>
           <SiteFooter logo={home.contact.logo} stackedLogo={home.hero.media} />
         </NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   );
