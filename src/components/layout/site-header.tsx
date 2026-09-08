@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { NAV_LINKS } from "@/lib/navigation";
+import { NAV_LINKS, homeAnchor } from "@/lib/navigation";
 import type { ImageSource } from "@/lib/media";
 import { HeaderShell } from "@/components/layout/header-shell";
 import { MobileMenu } from "@/components/layout/mobile-menu";
@@ -31,13 +31,13 @@ export function SiteHeader({ logo }: SiteHeaderProps) {
             className="hidden items-center gap-[1.875rem] lg:flex"
           >
             {NAV_LINKS.map(({ key, hash }) => (
-              <a
+              <Link
                 key={key}
-                href={hash}
+                href={homeAnchor(hash)}
                 className="text-nav font-semibold whitespace-nowrap text-purple uppercase transition-colors hover:text-purple-deep"
               >
                 {t(key)}
-              </a>
+              </Link>
             ))}
           </nav>
 

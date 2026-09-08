@@ -99,15 +99,36 @@ Read through `src/lib/config.ts`, never `process.env` in a component. See
 hero CTA; `soon` is the launch default because it preserves the hero
 composition.
 
+The store map is **not** a flag. Whether it renders is the `SHOW_MAP` constant
+at the top of `src/components/sections/store-map.tsx`: one line to flip, no
+environment involved. Only the credentials are environment —
+`NEXT_PUBLIC_MAPTILER_KEY` (public by necessity, so **restrict it by domain in
+the MapTiler panel before turning the map on**) and
+`NEXT_PUBLIC_MAPTILER_STYLE`, the brand style the client supplied.
+
+### Store map
+
+`src/components/sections/store-map.tsx` is the only thing that touches
+MapLibre, through `next/dynamic` with `ssr: false`, so `maplibre-gl` and its
+stylesheet stay in a lazy chunk (~1 MB minified) that is never fetched while
+`SHOW_MAP` is false — verified against `.next/server/app/es.html` after a
+build.
+
+Geodata lives in `src/lib/locations.ts`, not in the CMS: the `openings`
+component has no coordinates. Cities are matched by accent-insensitive name,
+and a city with no entry silently gets no pin. The framing is one
+`fitBounds` on `IBERIA_BOUNDS`, which is what makes the same map read as the
+portrait frame on mobile and the landscape one on desktop.
+
 ## Structure
 
 ```
 src/
   app/[locale]/{layout,page}.tsx   # root layout lives under the locale segment
   app/{sitemap,robots}.ts          # metadata routes, outside [locale]
-  components/layout/               # header shell, site header, mobile menu
+  components/layout/               # header shell, site header, mobile menu, footer
   components/sections/             # one file per page section
-  components/ui/                   # button, wordmark, locale switcher
+  components/ui/                   # button, wordmark, locale switcher, icons
   i18n/                            # next-intl routing, navigation, messages
   lib/                             # config, media, navigation, seo, utils
   services/                        # CMS access
@@ -123,9 +144,10 @@ Anything the CMS does not serve goes in `public/` and is listed here:
 
 | Path | Status | Notes |
 |---|---|---|
+| `public/images/churro-marker.png` | present | 112×182 RGBA, `hero-churro.png` downscaled ×10 (12 kB instead of 750 kB). The map pin: the asset already leans ~19° right, which is the tilt the Figma frame shows, so it is placed unrotated. Its lower tip sits at 39%/88.5% of the box — that is the `TIP` constant in `store-map-canvas.tsx`. |
 | `public/images/hero-churro.png` | present | 1120×1815 RGBA. One asset for both breakpoints: desktop uses it as-is, mobile mirrors it horizontally (`-scale-x-100`). Scale and offsets in `src/components/sections/hero.tsx` were calibrated by matching the shaft width against the mockups; see the comment on `HeroChurro`. |
-| `public/og-image.png` | **missing** | 1200×630 raster for Open Graph. The CMS `seo.metaImage` is an SVG, which social platforms don't render, so `src/lib/seo.ts` falls back to this file. |
-| `public/favicon.ico` / app icons | **pending** | Currently the `create-next-app` default at `src/app/favicon.ico`. |
+| `public/og-image.png` | **not needed** | The CMS now serves `OG IMAGE.png` (1200×600) on `seo.metaImage`, so this fallback is dead code. `src/lib/seo.ts` still falls back to it if `metaImage` ever goes back to being a vector. |
+| `src/app/favicon.ico` | present | The brand "C" in purple on transparent, one 256×256 PNG inside the ICO. Still missing `apple-icon.png` (180×180) and hand-drawn 16/32 versions — the stroke is 17px of 256, i.e. ~1px once the browser scales it to a 16px tab. See `churro-loop-web-hcn.4`. |
 
 ## Accessibility and performance baseline
 
@@ -136,16 +158,95 @@ honoured globally in `globals.css`.
 
 ## Known CMS copy issues (report to Doblemente, don't "fix" in code)
 
-- `hero.bodyText` (es): "EL CÁSICO DE SIEMPRE, COMO NUNCA LO HABIAS VISTO" —
-  missing the `L` in "CLÁSICO" and the accent in "HABÍAS".
-- `openings.openings[1].title` (es): "MY PRONTO" should be "MUY PRONTO".
-- `openings.intro` (en) merges the eyebrow and the title into one string.
+Last checked against the live API on 7 Sep 2026. Doblemente fixed the Spanish
+copy that day (`hero.bodyText` and the "MY PRONTO" typo) and uploaded the OG
+image; **nothing in the English locale changed**, so everything below is still
+open.
+
+- `openings.openings[0].title` (en) is "NOVIEMBRE 2026" — the only one of the
+  five left in Spanish; the other four say "COMING SOON".
+- `loops.title` (en) is "ENCUENTRA TU CHURRO LOOP MÁS CERCANO", untranslated.
+- Every image in the single type has an empty `alternativeText` (20 of 20).
 - `contact.instagram` is the placeholder handle `churroloopIG` (open point A6).
+- `franchiseCta.title` (en) and `contact.title` (en) are wrapped in `**` inside
+  plain-text fields. `SectionHeading` strips them so the asterisks never reach
+  the page, but the fields should be fixed in Strapi.
+- The two Figma frames disagree on the contact address: the mobile one shows
+  `info@churroloop.com`, the desktop one `marta@churroloop.com`. The desktop
+  one is right — the mobile frame predates the 3 Sep 17:21 email that asked for
+  the personal address — and the CMS agrees.
 
-<!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:970c3bf2 -->
-## Beads Issue Tracker
+Checked against `/legal-pages-churro-loops` on 8 Sep 2026, all of it open:
 
-This project uses **bd (beads)** for issue tracking. Run `bd prime` to see full workflow context and commands.
+- The whole legal corpus is still Doblemente's own: it names "DOBLE –
+  Doblemente Media SL", NIF B87114054 and `hola@wearedoble.com` as the owner
+  of churroloop.com. That is `churro-loop-web-65m.1` (A7) and it blocks
+  publishing the pages.
+- No English entries exist at all (`?locale=en` → `[]`).
+- All three `seo.metaTitle` read "Churo Loop" — one typo, three duplicate
+  titles.
+- `politica-de-cookies` block 4 has an empty `title`.
+
+## The two email addresses are deliberate
+
+They are not a mix-up, and neither is hardcoded:
+
+| Where | Address | CMS field | Why |
+|---|---|---|---|
+| "QUIERO MÁS INFORMACIÓN" | `info@churroloop.com` | `franchiseCta.franchbutton.redirectTo` | Email 1 of the brief: the franchise button opens a mail to the generic alias, which forwards to the three people at Doblemente |
+| Contacto | `marta@churroloop.com` | `contact.email` | Email 8: "PON DE CONTACTO EL MIO". Also the JSON-LD `Organization` email |
+
+Both mailboxes have to exist before launch (`churro-loop-web-sc7`).
+
+## Footer
+
+`src/components/layout/site-footer.tsx` renders from the root layout, so the
+legal pages inherit it. It uses **both** CMS lockups, because the design does:
+`hero.media` (stacked, 583×274) below `md`, `contact.logo` (horizontal,
+1399×233) from `md` up, each running to 8px of the edge on mobile and 16px on
+desktop.
+
+The three legal links come from `LEGAL_LINKS` (`src/lib/navigation.ts`) and go
+through the locale-aware `Link`, so they keep the visitor's language.
+
+## Header links go to the home page, not to a hash
+
+The header and the mobile menu render on the legal pages too, so the section
+anchors are `Link href="/#manifiesto"` (via `homeAnchor`), never a bare
+`href="#manifiesto"`: a bare hash resolves against the current URL and does
+nothing on `/legal/...`. From the home page the same link still just scrolls.
+
+## Legal pages
+
+`src/app/[locale]/legal/[slug]/page.tsx`, one route for the three pages, each
+prerendered per locale by `generateStaticParams` from `LEGAL_LINKS`.
+
+- Content type: the `/legal-pages-churro-loops` **collection** (not a single
+  type), filtered by its `slug` field — `filters[slug][$eq]` — which is the
+  only stable identifier; the numeric ids are not stable across environments.
+  `src/services/legal/*` holds the DTOs and `getLegalPage(locale, slug)`,
+  memoised with React `cache` and revalidated hourly under the `legal` tag.
+- The three slugs are `aviso-legal`, `politica-de-cookies` and
+  `politica-de-privacidad`. They are **not** translated, contrary to what the
+  original plan assumed: Strapi holds a single Spanish entry per page, so an
+  English slug would have no content behind it.
+- Shape: `slug`, the same `seo` component the home page uses, and `legalText`,
+  a repeatable component of `{ title, text }` clauses. `title` is nullable
+  (one cookie-policy block continues the clause above it) and `text` is the
+  same Markdown subset `Markdown` renders. There is no page-title field, so
+  the `h1` and the footer label both come from the `Legal` message namespace.
+- `seo.metaTitle` is identical ("Churo Loop", with the typo) on all three
+  entries, so `generateMetadata` substitutes the page name and keeps the rest
+  of the CMS `seo` component. Do not "fix" the CMS copy in code beyond that.
+- **The English locale is empty** (`GET …?locale=en` returns `[]`), so
+  `getLegalPage` falls back to the default locale and the page marks the copy
+  `lang="es"`. A legal page must be reachable in every language; delete the
+  fallback once the localisations land.
+
+<!-- BEGIN  INTEGRATION v:1 profile:minimal hash:970c3bf2 -->
+##  Issue Tracker
+
+This project uses **bd ()** for issue tracking. Run `bd prime` to see full workflow context and commands.
 
 ### Quick Reference
 
@@ -162,21 +263,21 @@ bd close <id>         # Complete work
 - Run `bd prime` for detailed command reference and session close protocol
 - Use `bd remember` for persistent knowledge — do NOT use MEMORY.md files
 
-**Architecture in one line:** issues live in a local Dolt DB; sync uses `refs/dolt/data` on your git remote; `.beads/issues.jsonl` is a passive export. See https://github.com/gastownhall/beads/blob/main/docs/SYNC_CONCEPTS.md for details and anti-patterns.
+**Architecture in one line:** issues live in a local Dolt DB; sync uses `refs/dolt/data` on your git remote; `./issues.jsonl` is a passive export. See https://github.com/gastownhall//blob/main/docs/SYNC_CONCEPTS.md for details and anti-patterns.
 
 ## Agent Context Profiles
 
-The managed Beads block is task-tracking guidance, not permission to override repository, user, or orchestrator instructions.
+The managed  block is task-tracking guidance, not permission to override repository, user, or orchestrator instructions.
 
 - **Conservative (default)**: Use `bd` for task tracking. Do not run git commits, git pushes, or Dolt remote sync unless explicitly asked. At handoff, report changed files, validation, and suggested next commands.
 - **Minimal**: Keep tool instruction files as pointers to `bd prime`; use the same conservative git policy unless active instructions say otherwise.
-- **Team-maintainer**: Only when the repository explicitly opts in, agents may close beads, run quality gates, commit, and push as part of session close. A current "do not commit" or "do not push" instruction still wins.
+- **Team-maintainer**: Only when the repository explicitly opts in, agents may close , run quality gates, commit, and push as part of session close. A current "do not commit" or "do not push" instruction still wins.
 
 ## Session Completion
 
-This protocol applies when ending a Beads implementation workflow. It is subordinate to explicit user, repository, and orchestrator instructions.
+This protocol applies when ending a  implementation workflow. It is subordinate to explicit user, repository, and orchestrator instructions.
 
-1. **File issues for remaining work** - Create beads for anything that needs follow-up
+1. **File issues for remaining work** - Create  for anything that needs follow-up
 2. **Run quality gates** (if code changed) - Tests, linters, builds
 3. **Update issue status** - Close finished work, update in-progress items
 4. **Handle git/sync by active profile**:
@@ -193,15 +294,15 @@ This protocol applies when ending a Beads implementation workflow. It is subordi
 5. **Hand off** - Summarize changes, validation, issue status, and any blocked sync/commit/push step
 
 **Critical rules:**
-- Explicit user or orchestrator instructions override this Beads block.
+- Explicit user or orchestrator instructions override this  block.
 - Do not commit or push without clear authority from the active profile or the current user request.
 - If a required sync or push is blocked, stop and report the exact command and error.
-<!-- END BEADS INTEGRATION -->
+<!-- END  INTEGRATION -->
 
-<!-- BEGIN BEADS CODEX SETUP: generated by bd setup codex -->
-## Beads Issue Tracker
+<!-- BEGIN  CODEX SETUP: generated by bd setup codex -->
+##  Issue Tracker
 
-Use Beads (`bd`) for durable task tracking in repositories that include it. Use the `beads` skill at `.agents/skills/beads/SKILL.md` (project install) or `~/.agents/skills/beads/SKILL.md` (global install) for Beads workflow guidance, then use the `bd` CLI for issue operations.
+Use  (`bd`) for durable task tracking in repositories that include it. Use the `` skill at `.agents/skills//SKILL.md` (project install) or `~/.agents/skills//SKILL.md` (global install) for  workflow guidance, then use the `bd` CLI for issue operations.
 
 ### Quick Reference
 
@@ -210,14 +311,14 @@ bd ready                # Find available work
 bd show <id>            # View issue details
 bd update <id> --claim  # Claim work
 bd close <id>           # Complete work
-bd prime                # Refresh Beads context
+bd prime                # Refresh  context
 ```
 
 ### Rules
 
 - Use `bd` for all task tracking; do not create markdown TODO lists.
-- Run `bd prime` when Beads context is missing or stale. Codex 0.129.0+ can load Beads context automatically through native hooks; use `/hooks` to inspect or toggle them.
-- Keep persistent project memory in Beads via `bd remember`; do not create ad hoc memory files.
+- Run `bd prime` when  context is missing or stale. Codex 0.129.0+ can load  context automatically through native hooks; use `/hooks` to inspect or toggle them.
+- Keep persistent project memory in  via `bd remember`; do not create ad hoc memory files.
 
-**Architecture in one line:** issues live in a local Dolt DB; sync uses `refs/dolt/data` on your git remote; `.beads/issues.jsonl` is a passive export. See https://github.com/gastownhall/beads/blob/main/docs/SYNC_CONCEPTS.md for details and anti-patterns.
-<!-- END BEADS CODEX SETUP -->
+**Architecture in one line:** issues live in a local Dolt DB; sync uses `refs/dolt/data` on your git remote; `./issues.jsonl` is a passive export. See https://github.com/gastownhall//blob/main/docs/SYNC_CONCEPTS.md for details and anti-patterns.
+<!-- END  CODEX SETUP -->

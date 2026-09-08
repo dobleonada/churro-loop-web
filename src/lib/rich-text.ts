@@ -15,3 +15,27 @@ export function toPlainParagraphs(source: string): string[] {
     .map((paragraph) => paragraph.replace(/\*\*/g, "").trim())
     .filter(Boolean);
 }
+
+/**
+ * Drops `**` from a field the CMS models as plain text but the editors wrote
+ * as Markdown — `franchiseCta.title` and `contact.title` are both
+ * `**LIKE THIS**` in English. Reported as churro-loop-web-3ia.2; stripping it
+ * here keeps the asterisks off the page in the meantime.
+ */
+export function stripEmphasis(source: string): string {
+  return source.replace(/\*\*/g, "").trim();
+}
+
+/**
+ * Splits the leading paragraph off a rich-text field, for the fields that pack
+ * a heading and its body into one — `franchiseCta.text` starts with the claim
+ * "**ABRE EL PRÓXIMO CHURRO LOOP.**" and continues with the body copy, and the
+ * design sets those as two different elements.
+ *
+ * The body is returned unparsed, so `Markdown` still handles its line breaks.
+ */
+export function splitLeadParagraph(source: string): [lead: string, body: string] {
+  const [lead = "", ...rest] = source.split(/\n\s*\n/);
+
+  return [stripEmphasis(lead), rest.join("\n\n")];
+}

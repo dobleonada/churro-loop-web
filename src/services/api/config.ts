@@ -15,4 +15,5 @@ export const CMS_BASE_URL = CMS_API_URL;
  */
 export const API_PATHS = {
   home: "/churro-loop-landing",
+  legalPages: "/legal-pages-churro-loops",
 } as const;

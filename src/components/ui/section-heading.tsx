@@ -1,4 +1,5 @@
 import type { ElementType } from "react";
+import { stripEmphasis } from "@/lib/rich-text";
 import { cn } from "@/lib/utils";
 
 interface SectionHeadingProps {
@@ -26,9 +27,13 @@ export function SectionHeading({
 
   return (
     <div className={cn("text-center text-purple", className)}>
-      <p className="font-display text-eyebrow uppercase">{eyebrow}</p>
+      {/* Both are stripped: several of these fields arrive from the CMS
+          wrapped in `**` (see churro-loop-web-3ia.2). */}
+      <p className="font-display text-eyebrow uppercase">
+        {stripEmphasis(eyebrow)}
+      </p>
       <Heading id={titleId} className="mt-2.5 font-display text-h2">
-        {title}
+        {stripEmphasis(title)}
       </Heading>
     </div>
   );

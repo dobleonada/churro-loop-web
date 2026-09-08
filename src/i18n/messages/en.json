@@ -19,9 +19,26 @@
     "previous": "Previous",
     "next": "Next"
   },
+  "Map": {
+    "regionLabel": "Map of the cities where Churro Loop is opening"
+  },
+  "Franchise": {
+    "mailSubject": "Franchise information request"
+  },
+  "Contact": {
+    "instagram": "Churro Loop on Instagram"
+  },
   "LocaleSwitcher": {
     "label": "Change language",
     "es": "ES",
     "en": "EN"
+  },
+  "Footer": {
+    "label": "Footer"
+  },
+  "Legal": {
+    "legalNotice": "Legal notice",
+    "cookies": "Cookie policy",
+    "privacy": "Privacy policy"
   }
 }

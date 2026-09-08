@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { NAV_LINKS } from "@/lib/navigation";
+import { Link } from "@/i18n/navigation";
+import { NAV_LINKS, homeAnchor } from "@/lib/navigation";
 import { LocaleSwitcher } from "@/components/ui/locale-switcher";
 
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -118,14 +119,14 @@ export function MobileMenu() {
             className="flex flex-1 flex-col items-center justify-center gap-8 px-6 pb-24 text-center"
           >
             {NAV_LINKS.map(({ key, hash }) => (
-              <a
+              <Link
                 key={key}
-                href={hash}
+                href={homeAnchor(hash)}
                 onClick={close}
                 className="font-display text-3xl tracking-[0.02em] text-purple"
               >
                 {t(key)}
-              </a>
+              </Link>
             ))}
           </nav>
         </div>

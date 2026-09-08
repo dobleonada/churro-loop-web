@@ -19,9 +19,26 @@
     "previous": "Anterior",
     "next": "Siguiente"
   },
+  "Map": {
+    "regionLabel": "Mapa de las ciudades donde abrirá Churro Loop"
+  },
+  "Franchise": {
+    "mailSubject": "Solicito información sobre franquicias Churro Loop"
+  },
+  "Contact": {
+    "instagram": "Churro Loop en Instagram"
+  },
   "LocaleSwitcher": {
     "label": "Cambiar idioma",
     "es": "ES",
     "en": "EN"
+  },
+  "Footer": {
+    "label": "Pie de página"
+  },
+  "Legal": {
+    "legalNotice": "Aviso legal",
+    "cookies": "Política de cookies",
+    "privacy": "Política de privacidad"
   }
 }

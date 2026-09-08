@@ -1,9 +1,13 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
+import { LEGAL_LINKS, legalHref } from "@/lib/navigation";
 import { absoluteUrl, languageAlternates } from "@/lib/seo";
 
-/** Routes that exist in every locale. Legal pages get added in phase 3. */
-const ROUTES = ["/"] as const;
+/** Routes that exist in every locale. */
+const ROUTES = [
+  "/",
+  ...LEGAL_LINKS.map(({ slug }) => legalHref(slug)),
+] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return ROUTES.flatMap((route) =>

@@ -33,14 +33,14 @@ Figma: https://www.figma.com/design/iaWmmWaoyEUo5vyAAJR4PA/CHURRO-LOOP?node-id=0
 | 4 | Marta Amézarri, 3 sep 17:11 | Se compran **churroloop.com y churroloop.es**, pero cuentas de correo solo en `.com` | `.es` redirige 301 a `.com`. Ver sección 12 |
 | 5 | Marta Amézarri, 3 sep 17:21 | Cambiar el logo del render de Bilbao por el de Loop | Tarea de diseño, afecta al asset final del carrusel |
 | 6 | Marta Amézarri, 3 sep 17:21 | Añadir **Valencia, Sevilla y Málaga** a próximas aperturas | El carrusel pasa de 2 a 5 ciudades |
-| 7 | Marta Amézarri, 3 sep 17:21 | Contacto: usar **su correo personal** en lugar del genérico | El diseño final muestra `marta@churroloop.com`. Ver punto abierto A2 |
+| 7 | Marta Amézarri, 3 sep 17:21 | Contacto: usar **su correo personal** en lugar del genérico | Afecta solo al bloque Contacto (`marta@churroloop.com`); el botón de franquicias sigue apuntando a `info@`. A2 resuelto |
 | 8 | Marta Vidal, 4 sep 12:43 | Figma actualizado: imágenes nuevas en "próximas aperturas" y en "nuestros loops". **Se ven 3 por defecto y el resto con las flechas** | Define el comportamiento del carrusel: 3 visibles en escritorio, navegación por flechas, no autoplay |
 | 9 | Marta Vidal, 4 sep 12:43 | Recursos actualizados en WeTransfer: `we.tl/t-qevxDB1YQMQZ6Z6p` | Descargar y optimizar antes de empezar. El enlace caduca |
 | 10 | Marta Amézarri, 4 sep 17:56 | Aprobación del diseño | Diseño validado, se puede maquetar |
 
 ### 1.3 Erratas del hilo que no deben implementarse
 
-En el correo del 3 de septiembre 17:21 aparece `CHURROPOP.COM` y `MARAT@CHURROPOP.COM`. Marta Vidal lo corrigió en el correo del 4 de septiembre y el diseño aprobado muestra `marta@churroloop.com`. **El dominio es churroloop.com**. Aun así conviene tener la confirmación por escrito antes de configurar los buzones (punto A1).
+En el correo del 3 de septiembre 17:21 aparece `CHURROPOP.COM` y `MARAT@CHURROPOP.COM`. Son erratas dobles: ni ese dominio se registró (en el correo 6 David confirma que lo disponible era `churroloop.es` y `churroloop.com`, y en el 7 Marta Amézarri responde "cogemos los dos"), ni `MARAT@` es un nombre. Marta Vidal preguntó explícitamente en el correo del 4 de septiembre 12:43 —*"supongo que querrías decir que la web sería churroloop.com y el e-mail marta@churroloop.com, ¿no?"*— y **Marta Amézarri no llegó a contestar a esa pregunta**: su correo de las 17:56 solo felicita por el diseño. **El dominio es churroloop.com**, no hay duda razonable, pero la confirmación por escrito sigue sin existir (punto A1) y hace falta antes de crear los buzones.
 
 ---
 
@@ -49,7 +49,11 @@ En el correo del 3 de septiembre 17:21 aparece `CHURROPOP.COM` y `MARAT@CHURROPO
 ### Bloqueantes antes de cerrar la maqueta
 
 - **A1. Confirmación de dominio y correo.** Marta Amézarri escribió "churropop" dos veces. Pedir un "sí" explícito a churroloop.com y marta@churroloop.com.
-- **A2. Dirección del botón de franquicias.** El correo 1 pedía `info@churroloop.com` con reenvío a tres personas; el diseño aprobado muestra `marta@churroloop.com`. Recomendación: crear `info@` como alias con reenvío a las tres y usarlo en el `mailto`, dejando `marta@` visible en Contacto si así lo quieren. Mientras no se confirme, ambas direcciones salen de una única constante en `lib/config.ts`.
+- ~~**A2. Dirección del botón de franquicias.**~~ **Resuelto releyendo el hilo: son dos direcciones distintas, cada una en su sitio, y no se contradicen.**
+  - **Botón "QUIERO MÁS INFORMACIÓN" → `info@churroloop.com`.** Correo 1 (Marta Vidal, 3 sep 13:41): *"este botón de 'quiero más información' debería abrir el correo para solicitar info a info@churroloop.com"*, y ese buzón es el alias que se reenvía a Marta Amézarri, Laura Álvarez y Marta Vidal.
+  - **Sección Contacto → `marta@churroloop.com`.** Correo 8 (Marta Amézarri, 3 sep 17:21): *"PON DE CONTACTO EL MIO"*, escrito como `MARAT@CHURROPOP.COM` y corregido por Marta Vidal en el correo 9. Habla del bloque de contacto, no del botón de franquicias.
+  - Ambas salen del CMS (`franchbutton.redirectTo` y `contact.email`), así que cambiarlas no toca código.
+  - **Queda una tarea de infraestructura, no de maqueta:** el botón apunta a `info@`, así que ese alias tiene que existir en `churroloop.com` y reenviar a las tres personas antes de publicar. Si no, las solicitudes de franquicia se pierden. Ver sección 12.
 - **A3. Assets finales.** El render de Bilbao con el logo corregido y las fotos nuevas del local que pidió Marta Amézarri. Sin ellos el carrusel queda con placeholders.
 - **A4. Tipografías.** Confirmar con Marta Vidal las familias exactas del Figma y **quién aporta la licencia web**. Hasta entonces se usa la pila de respaldo de la sección 6.3.
 
@@ -497,7 +501,7 @@ type StoreMapProps = {
 - Se registran `churroloop.com` y `churroloop.es`.
 - La web y el correo van sobre `churroloop.com`.
 - `churroloop.es` se configura con redirección 301 a `churroloop.com` conservando la ruta, en el proveedor de dominios o en el hosting. Sin contenido propio, para no generar duplicados en buscadores.
-- Buzones a crear en `.com`: `marta@` y, si se confirma A2, `info@` como alias con reenvío a Marta Amézarri, Laura Álvarez y Marta Vidal.
+- Buzones a crear en `.com`: `marta@` (buzón real, es el que se muestra en Contacto) e `info@` (alias con reenvío a Marta Amézarri, Laura Álvarez y Marta Vidal, es el destino del botón de franquicias). Los dos son obligatorios: cada uno está cableado a una parte distinta de la web.
 - Registros DNS a preparar: A o CNAME de la web, MX del proveedor de correo, SPF, DKIM y DMARC. Sin SPF y DKIM correctos, los correos del dominio nuevo van a spam desde el primer día.
 - Registros antiguos: Marta Amézarri pidió no renovar los dominios previos al vencimiento y dar de baja los buzones anteriores. Conviene poner fecha en calendario y hacer una copia de los buzones antes de eliminarlos.
 

@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
+import { Contact } from "@/components/sections/contact";
+import { Franchise } from "@/components/sections/franchise";
 import { Hero } from "@/components/sections/hero";
 import { Manifesto } from "@/components/sections/manifesto";
 import { OurLoops } from "@/components/sections/our-loops";
 import { PhotoStrip } from "@/components/sections/photo-strip";
 import { UpcomingOpenings } from "@/components/sections/upcoming-openings";
 import { routing } from "@/i18n/routing";
+import { toMapLocations } from "@/lib/locations";
 import { buildMetadata, organizationJsonLd } from "@/lib/seo";
 import { getHomePage } from "@/services/home/home.service";
 
@@ -53,7 +56,14 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
       <PhotoStrip gallery={home.gallery} />
       <Manifesto manifesto={home.manifesto} />
       <UpcomingOpenings openings={home.openings} />
-      <OurLoops loops={home.loops} />
+      <OurLoops
+        loops={home.loops}
+        locations={toMapLocations(
+          home.openings.openings.map((opening) => opening.location)
+        )}
+      />
+      <Franchise franchise={home.franchiseCta} />
+      <Contact contact={home.contact} />
     </>
   );
 }

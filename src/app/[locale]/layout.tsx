@@ -2,6 +2,7 @@ import { Cormorant_Garamond, Inter } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import "../globals.css";
+import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { routing } from "@/i18n/routing";
 import { getImage } from "@/lib/media";
@@ -57,6 +58,7 @@ export default async function RootLayout({
         <NextIntlClientProvider>
           {logo && <SiteHeader logo={logo} />}
           <main className="flex-1">{children}</main>
+          <SiteFooter logo={home.contact.logo} stackedLogo={home.hero.media} />
         </NextIntlClientProvider>
       </body>
     </html>
