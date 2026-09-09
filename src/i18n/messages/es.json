@@ -1,0 +1,44 @@
+{
+  "Nav": {
+    "label": "Navegación principal",
+    "manifesto": "MANIFIESTO",
+    "openings": "PRÓXIMAS APERTURAS",
+    "where": "¿DÓNDE ESTAMOS?",
+    "franchise": "FRANQUICIA",
+    "contact": "CONTACTO",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú"
+  },
+  "Hero": {
+    "menuSoon": "Disponible muy pronto"
+  },
+  "Carousel": {
+    "roleDescription": "carrusel",
+    "slideRoleDescription": "diapositiva",
+    "slide": "{index} de {total}",
+    "previous": "Anterior",
+    "next": "Siguiente"
+  },
+  "Map": {
+    "regionLabel": "Mapa de las ciudades donde abrirá Churro Loop"
+  },
+  "Franchise": {
+    "mailSubject": "Solicito información sobre franquicias Churro Loop"
+  },
+  "Contact": {
+    "instagram": "Churro Loop en Instagram"
+  },
+  "LocaleSwitcher": {
+    "label": "Cambiar idioma",
+    "es": "ES",
+    "en": "EN"
+  },
+  "Footer": {
+    "label": "Pie de página"
+  },
+  "Legal": {
+    "legalNotice": "Aviso legal",
+    "cookies": "Política de cookies",
+    "privacy": "Política de privacidad"
+  }
+}

@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+/*
+ * Churro Loop design tokens.
+ *
+ * Colours were sampled from the approved Figma exports (desktop + mobile);
+ * `--color-purple` is the exact value used inside the brand logo SVG that
+ * Strapi serves (`fill="#9900FF"`), so it is authoritative.
+ */
+@theme {
+  /* Colour */
+  --color-cream: #fbf7ee; /* global page background, confirmed by the client */
+  --color-purple: #9900ff; /* headings, logo, buttons, arrows */
+  --color-purple-deep: #7a00cc; /* hover / active */
+  --color-yellow: #fac94b; /* hero stripes, section bands, map */
+  --color-yellow-soft: #fce3a4; /* map background */
+  --color-ink: #000000; /* body copy */
+
+  /* Typography. Both families are placeholders until the licensed brand
+     fonts land (open point A4 in PLAN-CHURROLOOP.md); swapping them means
+     changing only the two `next/font` calls in the root layout. */
+  --font-display: var(--font-churro-display), "Cormorant Garamond", Georgia,
+    serif;
+  --font-sans: var(--font-churro-sans), "Inter", system-ui, sans-serif;
+
+  /* Type scale. Fluid values interpolate between the two reference
+     breakpoints measured in Figma: 390px (mobile) and 1440px (desktop). */
+  --text-nav: 0.75rem;
+  --text-nav--line-height: 1;
+  --text-nav--letter-spacing: 0.08em;
+
+  /* Overlay labels on cards (city, opening date) */
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.2;
+  --text-label--letter-spacing: 0.08em;
+
+  --text-button: 0.75rem;
+  --text-button--line-height: 1;
+  --text-button--letter-spacing: 0.14em;
+
+  /* Section eyebrow: 12px @390 → 20px @1440 */
+  --text-eyebrow: clamp(0.75rem, 1.39vw, 1.25rem);
+  --text-eyebrow--line-height: 1.2;
+  --text-eyebrow--letter-spacing: 0.16em;
+
+  /* Body copy inside sections: 15px @390 → 16px @1440 */
+  --text-copy: clamp(0.9375rem, 1.11vw, 1rem);
+  --text-copy--line-height: 1.35;
+
+  /* "WELCOME TO" / "THE NEW SPANISH ICON": 24px @390 → 48px @1440 */
+  --text-hero-lead: clamp(1.5rem, 3.34vw, 3rem);
+  --text-hero-lead--line-height: 1.1;
+
+  /* Hero standfirst: 17px @390 → 28px @1440 */
+  --text-hero-body: clamp(1.0625rem, 1.95vw, 1.75rem);
+  --text-hero-body--line-height: 1.35;
+
+  /* Section heading: 38px @390 → 60px @1440 */
+  --text-h2: clamp(2.375rem, 4.17vw, 3.75rem);
+  --text-h2--line-height: 1.05;
+  /* Section claim in black ("ABRE EL PRÓXIMO CHURRO LOOP."):
+     24px @390 → 32px @1440 */
+  --text-h3: clamp(1.5rem, 3vw, 2rem);
+  --text-h3--line-height: 1.3;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.7;
+  --text-small: 0.8125rem;
+
+  /* Footer legal links: 10.4px @390 → 14px @1440 */
+  --text-legal: clamp(0.65rem, 0.97vw, 0.875rem);
+  --text-legal--line-height: 1.4;
+
+  /* Footer copyright, the one footer line the design sets larger and bold:
+     16px @390 → 25px @1440 */
+  --text-copyright: clamp(1rem, 1.74vw, 1.5625rem);
+  --text-copyright--line-height: 1.2;
+
+  /* Layout */
+  --spacing-section: clamp(4rem, 9vw, 8rem);
+  --radius-card: 0.75rem; /* measured on the openings cards */
+  --container-site: 1440px;
+}
+
+/*
+ * Vertical yellow/white stripes behind the hero. The stripe width is a
+ * variable so each breakpoint can keep roughly the same stripe count as the
+ * Figma frames (~11 stripes @390, ~20 @1440).
+ */
+@utility bg-churro-stripes {
+  background-color: #ffffff;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--color-yellow) 0 var(--stripe-width, 2.25rem),
+    #ffffff var(--stripe-width, 2.25rem) calc(var(--stripe-width, 2.25rem) * 2)
+  );
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--color-purple);
+    color: var(--color-cream);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-purple);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

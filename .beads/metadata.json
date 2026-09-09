@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "churro_loop_web",
+  "project_id": "6e807de3-25bb-4100-8f27-806ff19b4e76"
+}
