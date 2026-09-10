@@ -12,6 +12,13 @@
   "Hero": {
     "menuSoon": "Coming very soon"
   },
+  "UnderConstruction": {
+    "title": "UNDER CONSTRUCTION",
+    "body": "We're cooking up something delicious. You'll be able to see it here very soon.",
+    "passwordLabel": "Password",
+    "submit": "Enter",
+    "error": "Wrong password"
+  },
   "Carousel": {
     "roleDescription": "carousel",
     "slideRoleDescription": "slide",

@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { routing } from "@/i18n/routing";
 import { getImage } from "@/lib/media";
+import { isPreviewUnlocked } from "@/lib/preview";
 import { getHomePage } from "@/services/home/home.service";
 
 /*
@@ -50,6 +51,14 @@ export default async function RootLayout({
 
   const logo = getImage(home.hero.media, "Churro Loop");
 
+  /*
+   * While the "under construction" curtain is up (`churro-loop-web-71v`) the
+   * chrome is not rendered: its navigation only points at sections of the
+   * landing, which nobody can reach yet. Deleting this flag — and the check in
+   * `page.tsx` — is what opens the site.
+   */
+  const unlocked = await isPreviewUnlocked();
+
   return (
     <html
       lang={locale}
@@ -57,9 +66,11 @@ export default async function RootLayout({
     >
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider>
-          {logo && <SiteHeader logo={logo} />}
+          {unlocked && logo && <SiteHeader logo={logo} />}
           <main className="flex-1">{children}</main>
-          <SiteFooter logo={home.contact.logo} stackedLogo={home.hero.media} />
+          {unlocked && (
+            <SiteFooter logo={home.contact.logo} stackedLogo={home.hero.media} />
+          )}
         </NextIntlClientProvider>
         <Analytics />
       </body>
