@@ -120,6 +120,38 @@ and a city with no entry silently gets no pin. The framing is one
 `fitBounds` on `IBERIA_BOUNDS`, which is what makes the same map read as the
 portrait frame on mobile and the landscape one on desktop.
 
+## Under construction curtain (temporary)
+
+Asked for by the client on 10 Sep 2026 (`churro-loop-web-71v`): `/` and `/en`
+show an "under construction" page instead of the landing, and the landing is
+revealed by a shared password typed on that page.
+
+It is deliberately **not** a feature flag and **not** a new route — the landing
+stays at `/`, so nothing about the site structure changes and reverting is a
+delete, not a move:
+
+| Piece | What it does |
+|---|---|
+| `src/lib/preview.ts` | The password (`churroloop2026`), the `churro-preview` cookie (httpOnly, 7 days) and `isPreviewUnlocked()` |
+| `src/lib/preview-action.ts` | The Server Action behind the form: checks the password, sets the cookie, redirects back to `/` in the visitor's locale |
+| `src/components/sections/under-construction.tsx` | The curtain itself — stripes, CMS lockup, `UnderConstruction` messages, the ES/EN switcher |
+| `src/components/sections/preview-gate.tsx` | The password field (`useActionState`; it also works with JS off) |
+
+To open the site: delete those four files, the `UnderConstruction` namespace in
+`src/i18n/messages/*.json`, the `isPreviewUnlocked()` check at the top of
+`src/app/[locale]/page.tsx` and the `unlocked &&` guards around the header and
+footer in `src/app/[locale]/layout.tsx`. Nothing else references them.
+
+Two things to know while it is up:
+
+- The chrome (header + footer) is not rendered while the curtain is up, on any
+  page — the layout reads the cookie, not the route. The legal pages therefore
+  render bare, and because the layout reads a cookie they are server-rendered
+  on demand instead of prerendered. Both go back to normal when the curtain
+  comes down.
+- The password is a curtain, not a security boundary: it is shared, and it is
+  compiled into the server bundle. Nothing genuinely private may go behind it.
+
 ## Structure
 
 ```

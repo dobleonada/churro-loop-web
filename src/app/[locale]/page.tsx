@@ -7,9 +7,12 @@ import { Hero } from "@/components/sections/hero";
 import { Manifesto } from "@/components/sections/manifesto";
 import { OurLoops } from "@/components/sections/our-loops";
 import { PhotoStrip } from "@/components/sections/photo-strip";
+import { UnderConstruction } from "@/components/sections/under-construction";
 import { UpcomingOpenings } from "@/components/sections/upcoming-openings";
 import { routing } from "@/i18n/routing";
 import { toMapLocations } from "@/lib/locations";
+import { getImage } from "@/lib/media";
+import { isPreviewUnlocked } from "@/lib/preview";
 import { buildMetadata, organizationJsonLd } from "@/lib/seo";
 import { getHomePage } from "@/services/home/home.service";
 
@@ -39,6 +42,20 @@ export async function generateMetadata({
 
 export default async function HomePage({ params }: PageProps<"/[locale]">) {
   const { home, locale } = await requireHomePage(params);
+
+  /*
+   * Temporary curtain (`churro-loop-web-71v`): until the visitor types the
+   * shared password the landing is not rendered at all — none of its copy or
+   * imagery reaches the browser. Deleting these three lines opens the site.
+   */
+  if (!(await isPreviewUnlocked())) {
+    return (
+      <UnderConstruction
+        locale={locale}
+        wordmark={getImage(home.hero.media, "Churro Loop")}
+      />
+    );
+  }
 
   const jsonLd = organizationJsonLd({
     seo: home.seo,

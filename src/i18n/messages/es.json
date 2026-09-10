@@ -12,6 +12,13 @@
   "Hero": {
     "menuSoon": "Disponible muy pronto"
   },
+  "UnderConstruction": {
+    "title": "EN CONSTRUCCIÓN",
+    "body": "Estamos preparando algo delicioso. Muy pronto podrás verlo aquí.",
+    "passwordLabel": "Contraseña",
+    "submit": "Entrar",
+    "error": "Contraseña incorrecta"
+  },
   "Carousel": {
     "roleDescription": "carrusel",
     "slideRoleDescription": "diapositiva",
