@@ -10,6 +10,7 @@ import { PhotoStrip } from "@/components/sections/photo-strip";
 import { UnderConstruction } from "@/components/sections/under-construction";
 import { UpcomingOpenings } from "@/components/sections/upcoming-openings";
 import { routing } from "@/i18n/routing";
+import { BRAND_NAME } from "@/lib/config";
 import { toMapLocations } from "@/lib/locations";
 import { getImage } from "@/lib/media";
 import { isPreviewUnlocked } from "@/lib/preview";
@@ -52,7 +53,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
     return (
       <UnderConstruction
         locale={locale}
-        wordmark={getImage(home.hero.media, "Churro Loop")}
+        wordmark={getImage(home.hero.media, BRAND_NAME)}
       />
     );
   }
@@ -75,9 +76,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
       <UpcomingOpenings openings={home.openings} />
       <OurLoops
         loops={home.loops}
-        locations={toMapLocations(
-          home.openings.openings.map((opening) => opening.location)
-        )}
+        locations={toMapLocations(home.openings.openings)}
       />
       <Franchise franchise={home.franchiseCta} />
       <Contact contact={home.contact} />

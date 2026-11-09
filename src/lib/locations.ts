@@ -18,8 +18,10 @@ export type Coordinates = readonly [number, number];
 export interface MapLocation {
   /** Slug of the city, stable across locales. Used as the React/marker key. */
   id: string;
-  /** City name exactly as the CMS spells it, for the accessible list. */
+  /** City name exactly as the CMS spells it, for the label and the list. */
   city: string;
+  /** When it opens ("ABRIL 2027", "MUY PRONTO 2027"): the CMS `title`. */
+  status: string;
   coordinates: Coordinates;
 }
 
@@ -53,14 +55,17 @@ function toCityKey(city: string): string {
 }
 
 /**
- * Maps CMS city names onto the coordinate table, dropping the ones we have no
- * coordinates for.
+ * Maps the CMS openings onto the coordinate table, dropping the ones we have
+ * no coordinates for. The pins follow the carousel: an opening removed from
+ * the CMS disappears from the map as well.
  */
-export function toMapLocations(cities: readonly string[]): MapLocation[] {
-  return cities.flatMap((city) => {
+export function toMapLocations(
+  openings: readonly { location: string; title: string }[]
+): MapLocation[] {
+  return openings.flatMap(({ location: city, title: status }) => {
     const id = toCityKey(city);
     const coordinates = CITY_COORDINATES[id];
 
-    return coordinates ? [{ id, city, coordinates }] : [];
+    return coordinates ? [{ id, city, status, coordinates }] : [];
   });
 }

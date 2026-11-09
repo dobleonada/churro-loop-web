@@ -7,7 +7,7 @@ import type { ManifestoDto } from "@/services/home/home.dto";
  * Manifesto: eyebrow, heading, two blocks of centred copy and the closing
  * signature — all of it, except the eyebrow, coming from `manifesto.text`.
  *
- * The eyebrow reads "CHURRO LOOP" in the display serif with wide tracking.
+ * The eyebrow reads "CHURROLOOP" in the display serif with wide tracking.
  * The CMS component has no eyebrow field: the only spare one is
  * `manifesto.logo`, which holds the horizontal lockup SVG. That SVG is not
  * what the approved design shows here — its width-to-cap-height ratio is 6:1

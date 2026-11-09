@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { LegalTextBlocks } from "@/components/sections/legal-text-blocks";
 import { routing } from "@/i18n/routing";
+import { BRAND_NAME } from "@/lib/config";
 import { LEGAL_LINKS, legalHref } from "@/lib/navigation";
 import { buildMetadata } from "@/lib/seo";
 import { getLegalPage } from "@/services/legal/legal.service";
@@ -50,7 +51,7 @@ export async function generateMetadata({
     // entries carry the same `metaTitle`, so the page name is used instead —
     // three pages under one title is a duplicate-title problem, not copy.
     // Everything else (description, robots, image) still comes from the CMS.
-    seo: { ...page.seo, metaTitle: `${t(key)} | Churro Loop` },
+    seo: { ...page.seo, metaTitle: `${t(key)} | ${BRAND_NAME}` },
     locale,
     pathname: legalHref(page.slug),
   });

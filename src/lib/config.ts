@@ -5,21 +5,24 @@
  */
 
 /**
- * How the hero's "VER CARTA" / "VIEW MENU" button behaves while there is no
- * menu to link to:
- * - `hidden`: the button is not rendered at all.
+ * How the hero's "VER CARTA" / "VIEW MENU" button behaves:
+ * - `link`:   the button opens the menu (`NEXT_PUBLIC_MENU_URL`, or the PDF in
+ *             `public/` — see `MENU_PDF`). The default since the client sent
+ *             the menu on 9 Nov 2026.
  * - `soon`:   the button renders and announces "coming very soon" on click.
- * - `link`:   the button links to the CMS `cta.url` (or `NEXT_PUBLIC_MENU_URL`).
+ * - `hidden`: the button is not rendered at all.
  */
 export type MenuMode = "hidden" | "soon" | "link";
 
 /**
  * Brand name, used where the design typesets it as an eyebrow rather than
- * showing the logo lockup (the manifesto, for instance). It is an identity
- * constant, not copy: it is identical in both locales, which is why it does
- * not live in the message catalogs.
+ * showing the logo lockup (the manifesto, for instance), and as the fallback
+ * alt text and metadata name. It is an identity constant, not copy: it is
+ * identical in both locales, which is why it does not live in the message
+ * catalogs. Always one word — the trademark is registered as "CHURROLOOP"
+ * (client email, 9 Nov 2026).
  */
-export const BRAND_NAME = "Churro Loop";
+export const BRAND_NAME = "ChurroLoop";
 
 /**
  * The footer copyright line, exactly as the design typesets it — no space, no
@@ -27,6 +30,13 @@ export const BRAND_NAME = "Churro Loop";
  * locales, so it belongs here rather than in the message catalogs.
  */
 export const COPYRIGHT_NOTICE = "ChurroLoop2026©";
+
+/**
+ * The menu, as the client supplied it (`CartaChurroLoopWeb.pdf`). It is not in
+ * the CMS — the hero `cta.url` field still holds a placeholder — so it is
+ * served from `public/`. Replacing the menu means replacing that file.
+ */
+export const MENU_PDF = "/carta-churroloop.pdf";
 
 /**
  * MapTiler style designed for the brand (yellow land, cream water). The key is
@@ -38,7 +48,7 @@ const DEFAULT_MAP_STYLE =
 function parseMenuMode(value: string | undefined): MenuMode {
   return value === "hidden" || value === "link" || value === "soon"
     ? value
-    : "soon";
+    : "link";
 }
 
 export const siteConfig = {
@@ -49,8 +59,8 @@ export const siteConfig = {
   ),
   menu: {
     mode: parseMenuMode(process.env.NEXT_PUBLIC_MENU_MODE),
-    /** Overrides the CMS `cta.url` when set. Only used in `link` mode. */
-    url: process.env.NEXT_PUBLIC_MENU_URL || null,
+    /** Where the button points in `link` mode. Defaults to the bundled PDF. */
+    url: process.env.NEXT_PUBLIC_MENU_URL || MENU_PDF,
   },
   map: {
     /**

@@ -95,24 +95,34 @@ navigation labels, the menu open/close labels and the "coming soon" notice.
 ## Feature flags
 
 Read through `src/lib/config.ts`, never `process.env` in a component. See
-`.env.example`. `NEXT_PUBLIC_MENU_MODE` (`hidden` | `soon` | `link`) drives the
-hero CTA; `soon` is the launch default because it preserves the hero
-composition.
+`.env.example`. `NEXT_PUBLIC_MENU_MODE` (`link` | `soon` | `hidden`) drives the
+hero CTA. `link` is the default since the client sent the menu on 9 Nov 2026:
+"VER CARTA" opens `public/carta-churroloop.pdf` (`MENU_PDF` in
+`src/lib/config.ts`) in a new tab, unless `NEXT_PUBLIC_MENU_URL` overrides it.
+The CMS `hero.cta.url` is a placeholder (`www.google.es`) and is not read.
+**An environment that still sets `NEXT_PUBLIC_MENU_MODE=soon` (Vercel did at
+launch) keeps showing "Disponible muy pronto"** — set it to `link` or remove it.
 
 The store map is **not** a flag. Whether it renders is the `SHOW_MAP` constant
 at the top of `src/components/sections/store-map.tsx`: one line to flip, no
 environment involved. Only the credentials are environment —
 `NEXT_PUBLIC_MAPTILER_KEY` (public by necessity, so **restrict it by domain in
-the MapTiler panel before turning the map on**) and
-`NEXT_PUBLIC_MAPTILER_STYLE`, the brand style the client supplied.
+the MapTiler panel**) and `NEXT_PUBLIC_MAPTILER_STYLE`, the brand style the
+client supplied. `SHOW_MAP` is `true` since 9 Nov 2026; without a key the map
+still renders nothing, so the key must be set wherever the site is deployed.
 
 ### Store map
 
 `src/components/sections/store-map.tsx` is the only thing that touches
 MapLibre, through `next/dynamic` with `ssr: false`, so `maplibre-gl` and its
-stylesheet stay in a lazy chunk (~1 MB minified) that is never fetched while
-`SHOW_MAP` is false — verified against `.next/server/app/es.html` after a
-build.
+stylesheet stay in a lazy chunk (~1 MB minified), fetched only once the map
+renders.
+
+Each pin carries a purple label with the city and its opening date — the CMS
+`openings` `location` and `title` — so the map always says what the carousel
+says, and an opening deleted in Strapi loses its pin too. The canvas container
+is sized with `h-full`, never `absolute inset-0`: MapLibre's stylesheet forces
+`.maplibregl-map` to `position: relative`, which collapses the latter to 0px.
 
 Geodata lives in `src/lib/locations.ts`, not in the CMS: the `openings`
 component has no coordinates. Cities are matched by accent-insensitive name,
@@ -177,6 +187,7 @@ Anything the CMS does not serve goes in `public/` and is listed here:
 | Path | Status | Notes |
 |---|---|---|
 | `public/images/churro-marker.png` | present | 112×182 RGBA, `hero-churro.png` downscaled ×10 (12 kB instead of 750 kB). The map pin: the asset already leans ~19° right, which is the tilt the Figma frame shows, so it is placed unrotated. Its lower tip sits at 39%/88.5% of the box — that is the `TIP` constant in `store-map-canvas.tsx`. |
+| `public/carta-churroloop.pdf` | present | The menu, `CartaChurroLoopWeb.pdf` from the 9 Nov 2026 email (1.7 MB). Opened by the hero "VER CARTA" button; see `MENU_PDF`. |
 | `public/images/hero-churro.png` | present | 1120×1815 RGBA. One asset for both breakpoints: desktop uses it as-is, mobile mirrors it horizontally (`-scale-x-100`). Scale and offsets in `src/components/sections/hero.tsx` were calibrated by matching the shaft width against the mockups; see the comment on `HeroChurro`. |
 | `public/og-image.png` | **not needed** | The CMS now serves `OG IMAGE.png` (1200×600) on `seo.metaImage`, so this fallback is dead code. `src/lib/seo.ts` still falls back to it if `metaImage` ever goes back to being a vector. |
 | `src/app/favicon.ico` | present | The brand "C" in purple on transparent, one 256×256 PNG inside the ICO. Still missing `apple-icon.png` (180×180) and hand-drawn 16/32 versions — the stroke is 17px of 256, i.e. ~1px once the browser scales it to a 16px tab. See `churro-loop-web-hcn.4`. |
@@ -187,6 +198,23 @@ One `h1` per page (the hero lockup, with the wordmark's `alt` inside it).
 Decorative imagery is `aria-hidden` with `alt=""`. The mobile overlay traps
 focus, closes on Escape and locks background scroll. `prefers-reduced-motion` is
 honoured globally in `globals.css`.
+
+## Pending CMS changes from the 9 Nov 2026 email (`churro-loop-web-mgk`)
+
+The front is ready for these; they are content, so they are made in Strapi
+(both locales unless noted), not in code:
+
+- Gallery: replace the 2nd image (`churro loop 02.png`, id 842, the churro
+  close-up) with the two ice-cream cups photo.
+- Every text field: "CHURRO LOOP" → "CHURROLOOP" (the trademark is one word):
+  `openings.title`, `loops.title`, `manifesto.text`, `franchiseCta.text`, the
+  `seo` description/keywords. Code-side strings already use `BRAND_NAME`.
+- `openings.intro`: "PRÓXIMAS APERTURAS" → "PRÓXIMAS APERTURAS LOCALES".
+- `openings.openings`: order BILBAO "ABRIL 2027" → MÁLAGA → VALENCIA → BURGOS,
+  the last three "MUY PRONTO 2027"; delete SEVILLA (its map pin goes with it).
+- VALENCIA opening image → the Ciudad de las Artes y las Ciencias one.
+- `contact.instagram` → `churroloopcompany` (a full or scheme-less URL also
+  works, `instagramUrl` normalises it).
 
 ## Known CMS copy issues (report to Doblemente, don't "fix" in code)
 

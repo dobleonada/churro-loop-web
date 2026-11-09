@@ -1,6 +1,6 @@
 import { Wordmark } from "@/components/ui/wordmark";
 import { Link } from "@/i18n/navigation";
-import { COPYRIGHT_NOTICE } from "@/lib/config";
+import { BRAND_NAME, COPYRIGHT_NOTICE } from "@/lib/config";
 import { getImage } from "@/lib/media";
 import { LEGAL_LINKS, legalHref } from "@/lib/navigation";
 import type { StrapiMedia } from "@/services/api/strapi.types";
@@ -28,8 +28,8 @@ interface SiteFooterProps {
  */
 export function SiteFooter({ logo, stackedLogo }: SiteFooterProps) {
   const t = useTranslations("Legal");
-  const horizontal = getImage(logo, "Churro Loop");
-  const stacked = getImage(stackedLogo, "Churro Loop");
+  const horizontal = getImage(logo, BRAND_NAME);
+  const stacked = getImage(stackedLogo, BRAND_NAME);
 
   return (
     <footer className="pb-7 lg:pb-9">

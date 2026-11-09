@@ -25,17 +25,49 @@ const TIP = { x: 0.39, y: 0.885 } as const;
 /** Room for the pins, which stand ~78px above the coordinate they mark. */
 const FIT_PADDING = { top: 88, right: 24, bottom: 24, left: 24 };
 
-function createMarkerElement(): HTMLImageElement {
-  const element = document.createElement("img");
+/**
+ * Where the label sits relative to the tip, measured on the 9 Nov 2026 frames:
+ * its left edge just behind the tip and its body straddling it, so the lower
+ * end of the churro stands in front of the label's left padding.
+ */
+const LABEL_OFFSET = { x: -8, y: -18 } as const;
 
-  element.src = "/images/churro-marker.png";
-  element.width = MARKER_WIDTH;
-  element.height = MARKER_HEIGHT;
-  // The city names are announced by the list next to the map, so the pins
-  // themselves are decoration.
-  element.alt = "";
+/**
+ * The pin plus its purple label ("BILBAO / ABRIL 2027"). Built by hand
+ * because MapLibre markers are plain DOM, not React; the Tailwind classes
+ * still apply since this file is scanned like any other.
+ *
+ * The label is visible text but also duplicated in the list next to the map:
+ * the canvas region is not something a screen reader can walk, so the markers
+ * are hidden from assistive tech and the list does the announcing.
+ */
+function createMarkerElement(location: MapLocation): HTMLDivElement {
+  const element = document.createElement("div");
+  element.style.width = `${MARKER_WIDTH}px`;
+  element.style.height = `${MARKER_HEIGHT}px`;
   element.setAttribute("aria-hidden", "true");
-  element.draggable = false;
+
+  const label = document.createElement("span");
+  label.className =
+    "absolute flex flex-col whitespace-nowrap rounded-lg bg-purple py-1 pr-2.5 pl-5 font-sans text-[0.5625rem] leading-[1.15] font-semibold text-white uppercase md:text-[0.625rem]";
+  label.style.left = `${TIP.x * MARKER_WIDTH + LABEL_OFFSET.x}px`;
+  label.style.top = `${TIP.y * MARKER_HEIGHT + LABEL_OFFSET.y}px`;
+
+  const city = document.createElement("span");
+  city.textContent = location.city;
+  const status = document.createElement("span");
+  status.textContent = location.status;
+  label.append(city, status);
+
+  const churro = document.createElement("img");
+  churro.src = "/images/churro-marker.png";
+  churro.width = MARKER_WIDTH;
+  churro.height = MARKER_HEIGHT;
+  churro.alt = "";
+  churro.draggable = false;
+  churro.className = "relative";
+
+  element.append(label, churro);
 
   return element;
 }
@@ -91,7 +123,7 @@ export default function StoreMapCanvas({
 
     for (const location of locations) {
       new maplibregl.Marker({
-        element: createMarkerElement(),
+        element: createMarkerElement(location),
         anchor: "top-left",
         offset: [-TIP.x * MARKER_WIDTH, -TIP.y * MARKER_HEIGHT],
       })
@@ -105,5 +137,8 @@ export default function StoreMapCanvas({
     };
   }, [locations]);
 
-  return <div ref={containerRef} className="absolute inset-0" />;
+  // Sized with `h-full`, not `absolute inset-0`: MapLibre's stylesheet sets
+  // `.maplibregl-map { position: relative }`, which would turn the latter into
+  // a 0px-tall box — an empty frame with every pin bunched in the middle.
+  return <div ref={containerRef} className="h-full w-full" />;
 }

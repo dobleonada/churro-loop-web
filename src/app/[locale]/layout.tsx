@@ -6,6 +6,7 @@ import "../globals.css";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { routing } from "@/i18n/routing";
+import { BRAND_NAME } from "@/lib/config";
 import { getImage } from "@/lib/media";
 import { isPreviewUnlocked } from "@/lib/preview";
 import { getHomePage } from "@/services/home/home.service";
@@ -49,7 +50,7 @@ export default async function RootLayout({
     notFound();
   }
 
-  const logo = getImage(home.hero.media, "Churro Loop");
+  const logo = getImage(home.hero.media, BRAND_NAME);
 
   /*
    * While the "under construction" curtain is up (`churro-loop-web-71v`) the

@@ -2,13 +2,18 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Wordmark } from "@/components/ui/wordmark";
 import { MenuSoonButton } from "@/components/sections/menu-soon-button";
-import { siteConfig } from "@/lib/config";
+import { BRAND_NAME, siteConfig } from "@/lib/config";
 import { getImage } from "@/lib/media";
 import type { HeroDto } from "@/services/home/home.dto";
 
-/** The CMS stores the menu link without a scheme (e.g. `www.google.es`). */
+/**
+ * Site paths (the bundled PDF) pass through; anything else may come without a
+ * scheme (e.g. `www.example.com`), so give it one.
+ */
 function normalizeUrl(url: string): string {
-  return /^https?:\/\//i.test(url) ? url : `https://${url}`;
+  return url.startsWith("/") || /^https?:\/\//i.test(url)
+    ? url
+    : `https://${url}`;
 }
 
 function MenuCta({ cta }: { cta: HeroDto["cta"] }) {
@@ -17,11 +22,13 @@ function MenuCta({ cta }: { cta: HeroDto["cta"] }) {
   if (mode === "hidden") return null;
 
   if (mode === "link") {
-    const href = url ?? cta.url;
-    if (!href) return null;
-
     return (
-      <Button as="a" href={normalizeUrl(href)}>
+      <Button
+        as="a"
+        href={normalizeUrl(url)}
+        target="_blank"
+        rel="noopener"
+      >
         {cta.label}
       </Button>
     );
@@ -77,7 +84,7 @@ function HeroChurro() {
 }
 
 export function Hero({ hero }: { hero: HeroDto }) {
-  const wordmark = getImage(hero.media, "Churro Loop");
+  const wordmark = getImage(hero.media, BRAND_NAME);
 
   return (
     <section
