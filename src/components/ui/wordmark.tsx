@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { BRAND_NAME } from "@/lib/config";
 import type { ImageSource } from "@/lib/media";
 import { cn } from "@/lib/utils";
 
@@ -18,7 +19,7 @@ export function Wordmark({ image, className, priority }: WordmarkProps) {
   return (
     <Image
       src={image.src}
-      alt={image.alt || "Churro Loop"}
+      alt={image.alt || BRAND_NAME}
       width={image.width}
       height={image.height}
       priority={priority}

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { Locale } from "next-intl";
 import { getPathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { siteConfig } from "@/lib/config";
+import { BRAND_NAME, siteConfig } from "@/lib/config";
 import { getImage } from "@/lib/media";
 import type { ContactDto, SeoDto } from "@/services/home/home.dto";
 
@@ -95,7 +95,7 @@ export function buildMetadata({
     },
     openGraph: {
       type: "website",
-      siteName: "Churro Loop",
+      siteName: BRAND_NAME,
       locale: HREF_LANG[locale],
       url: canonical,
       title: seo.metaTitle,
@@ -130,7 +130,7 @@ export function organizationJsonLd({
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Churro Loop",
+    name: BRAND_NAME,
     description: seo.metaDescription,
     url: absoluteUrl("/", locale),
     ...(logo ? { logo: logo.src } : {}),
@@ -140,12 +140,21 @@ export function organizationJsonLd({
 }
 
 /**
- * The CMS stores the Instagram account as a bare handle, so normalise it to a
- * profile URL. Returns `null` while the field is empty (open point A6).
+ * Normalises the CMS Instagram field to a profile URL. Editors have put a bare
+ * handle there (`churroloopIG`), and the client sent the new account as a
+ * scheme-less URL (`www.instagram.com/churroloopcompany/`), so all of
+ * `@handle`, `handle`, `instagram.com/handle` and a full URL are accepted.
+ * Returns `null` while the field is empty.
  */
 export function instagramUrl(value: string | null | undefined): string | null {
-  if (!value) return null;
-  if (/^https?:\/\//i.test(value)) return value;
+  const trimmed = value?.trim();
+  if (!trimmed) return null;
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
 
-  return `https://www.instagram.com/${value.replace(/^@/, "")}`;
+  const handle = trimmed
+    .replace(/^(www\.)?instagram\.com\//i, "")
+    .replace(/^@/, "")
+    .replace(/\/+$/, "");
+
+  return `https://www.instagram.com/${handle}/`;
 }

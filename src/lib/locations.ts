@@ -18,8 +18,10 @@ export type Coordinates = readonly [number, number];
 export interface MapLocation {
   /** Slug of the city, stable across locales. Used as the React/marker key. */
   id: string;
-  /** City name exactly as the CMS spells it, for the accessible list. */
+  /** City name exactly as the CMS spells it, for the label and the list. */
   city: string;
+  /** When it opens ("ABRIL 2027", "MUY PRONTO 2027"): the CMS `title`. */
+  status: string;
   coordinates: Coordinates;
 }
 
@@ -36,11 +38,21 @@ const CITY_COORDINATES: Record<string, Coordinates> = {
 /**
  * Initial framing: the Iberian peninsula, as in the design. Fitting bounds
  * rather than hardcoding a centre and zoom is what lets the same map look
- * right in the portrait frame on mobile and the landscape one on desktop.
+ * right at any width of the landscape frame (tablet and desktop).
  */
 export const IBERIA_BOUNDS: readonly [Coordinates, Coordinates] = [
   [-9.6, 36.0],
   [3.4, 43.9],
+];
+
+/**
+ * The portrait frame on mobile is width-bound, so the whole peninsula would
+ * leave Spain small between France and Morocco. The mobile Figma frame crops
+ * Portugal and stops at Barcelona instead, letting Spain fill the frame.
+ */
+export const PORTRAIT_BOUNDS: readonly [Coordinates, Coordinates] = [
+  [-7.4, 36.2],
+  [2.4, 43.6],
 ];
 
 /** "MÁLAGA" and "Málaga" both have to match the `malaga` key. */
@@ -53,14 +65,17 @@ function toCityKey(city: string): string {
 }
 
 /**
- * Maps CMS city names onto the coordinate table, dropping the ones we have no
- * coordinates for.
+ * Maps the CMS openings onto the coordinate table, dropping the ones we have
+ * no coordinates for. The pins follow the carousel: an opening removed from
+ * the CMS disappears from the map as well.
  */
-export function toMapLocations(cities: readonly string[]): MapLocation[] {
-  return cities.flatMap((city) => {
+export function toMapLocations(
+  openings: readonly { location: string; title: string }[]
+): MapLocation[] {
+  return openings.flatMap(({ location: city, title: status }) => {
     const id = toCityKey(city);
     const coordinates = CITY_COORDINATES[id];
 
-    return coordinates ? [{ id, city, coordinates }] : [];
+    return coordinates ? [{ id, city, status, coordinates }] : [];
   });
 }

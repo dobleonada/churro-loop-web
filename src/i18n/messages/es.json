@@ -27,13 +27,13 @@
     "next": "Siguiente"
   },
   "Map": {
-    "regionLabel": "Mapa de las ciudades donde abrirá Churro Loop"
+    "regionLabel": "Mapa de las ciudades donde abrirá ChurroLoop"
   },
   "Franchise": {
-    "mailSubject": "Solicito información sobre franquicias Churro Loop"
+    "mailSubject": "Solicito información sobre franquicias ChurroLoop"
   },
   "Contact": {
-    "instagram": "Churro Loop en Instagram"
+    "instagram": "ChurroLoop en Instagram"
   },
   "LocaleSwitcher": {
     "label": "Cambiar idioma",

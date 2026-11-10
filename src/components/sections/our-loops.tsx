@@ -19,10 +19,9 @@ import type { LoopsDto } from "@/services/home/home.dto";
  * - `loops.loops` is a repeatable component whose only field is itself a
  *   multiple-media one, so the slides are the flattened images.
  *
- * The store map goes under this carousel. It is behind `NEXT_PUBLIC_SHOW_MAP`
- * because there are no open stores yet, and MapLibre is only imported from
- * inside `StoreMap`'s lazy chunk: keeping it out of the initial bundle is a
- * launch requirement.
+ * The store map goes under this carousel, marking the cities of the upcoming
+ * openings. MapLibre is only imported from inside `StoreMap`'s lazy chunk:
+ * keeping it out of the initial bundle is a launch requirement.
  */
 export function OurLoops({
   loops,

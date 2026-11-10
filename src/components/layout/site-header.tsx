@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { BRAND_NAME } from "@/lib/config";
 import { NAV_LINKS, homeAnchor } from "@/lib/navigation";
 import type { ImageSource } from "@/lib/media";
 import { HeaderShell } from "@/components/layout/header-shell";
@@ -17,7 +18,7 @@ export function SiteHeader({ logo }: SiteHeaderProps) {
   return (
     <HeaderShell>
       <div className="mx-auto flex max-w-site items-center justify-between px-[1.375rem] py-5 md:px-6 lg:px-8 lg:py-9">
-        <Link href="/" aria-label="Churro Loop">
+        <Link href="/" aria-label={BRAND_NAME}>
           <Wordmark
             image={logo}
             className="h-[51px] w-auto lg:h-[54px]"

@@ -5,21 +5,24 @@
  */
 
 /**
- * How the hero's "VER CARTA" / "VIEW MENU" button behaves while there is no
- * menu to link to:
- * - `hidden`: the button is not rendered at all.
+ * How the hero's "VER CARTA" / "VIEW MENU" button behaves:
+ * - `link`:   the button opens the menu (`NEXT_PUBLIC_MENU_URL`, or the PDF in
+ *             `public/` — see `MENU_PDF`). The default since the client sent
+ *             the menu on 9 Nov 2026.
  * - `soon`:   the button renders and announces "coming very soon" on click.
- * - `link`:   the button links to the CMS `cta.url` (or `NEXT_PUBLIC_MENU_URL`).
+ * - `hidden`: the button is not rendered at all.
  */
 export type MenuMode = "hidden" | "soon" | "link";
 
 /**
  * Brand name, used where the design typesets it as an eyebrow rather than
- * showing the logo lockup (the manifesto, for instance). It is an identity
- * constant, not copy: it is identical in both locales, which is why it does
- * not live in the message catalogs.
+ * showing the logo lockup (the manifesto, for instance), and as the fallback
+ * alt text and metadata name. It is an identity constant, not copy: it is
+ * identical in both locales, which is why it does not live in the message
+ * catalogs. Always one word — the trademark is registered as "CHURROLOOP"
+ * (client email, 9 Nov 2026).
  */
-export const BRAND_NAME = "Churro Loop";
+export const BRAND_NAME = "ChurroLoop";
 
 /**
  * The footer copyright line, exactly as the design typesets it — no space, no
@@ -29,16 +32,23 @@ export const BRAND_NAME = "Churro Loop";
 export const COPYRIGHT_NOTICE = "ChurroLoop2026©";
 
 /**
- * MapTiler style designed for the brand (yellow land, cream water). The key is
- * appended at runtime, so the URL alone is safe to keep in the repo.
+ * The menu, as the client supplied it (`CartaChurroLoopWeb.pdf`). It is not in
+ * the CMS — the hero `cta.url` field still holds a placeholder — so it is
+ * served from `public/`. Replacing the menu means replacing that file.
  */
-const DEFAULT_MAP_STYLE =
-  "https://api.maptiler.com/maps/01a014c9-6660-7e5a-8ff0-4c479ab0b9ff/style.json";
+export const MENU_PDF = "/carta-churroloop.pdf";
+
+/**
+ * The brand map style (yellow land, cream water), served from `public/`. It is
+ * OpenFreeMap's Positron recoloured by `scripts/build-map-style.mjs`: free, no
+ * API key, commercial use allowed, so the map needs no environment at all.
+ */
+export const MAP_STYLE_PATH = "/map/churroloop-style.json";
 
 function parseMenuMode(value: string | undefined): MenuMode {
   return value === "hidden" || value === "link" || value === "soon"
     ? value
-    : "soon";
+    : "link";
 }
 
 export const siteConfig = {
@@ -49,27 +59,7 @@ export const siteConfig = {
   ),
   menu: {
     mode: parseMenuMode(process.env.NEXT_PUBLIC_MENU_MODE),
-    /** Overrides the CMS `cta.url` when set. Only used in `link` mode. */
-    url: process.env.NEXT_PUBLIC_MENU_URL || null,
-  },
-  map: {
-    /**
-     * Whether the map renders is a code switch in `store-map.tsx`, not a flag.
-     * These two are credentials and cannot be anything but environment: the
-     * key must not be committed, and it is only read once the map is on.
-     *
-     * The key is public by necessity, so restrict it by domain in the MapTiler
-     * panel before turning the map on.
-     */
-    key: process.env.NEXT_PUBLIC_MAPTILER_KEY || "",
-    styleUrl: process.env.NEXT_PUBLIC_MAPTILER_STYLE || DEFAULT_MAP_STYLE,
+    /** Where the button points in `link` mode. Defaults to the bundled PDF. */
+    url: process.env.NEXT_PUBLIC_MENU_URL || MENU_PDF,
   },
 } as const;
-
-/** The style URL with the API key attached, as MapTiler expects it. */
-export function mapStyleUrl(): string {
-  const url = new URL(siteConfig.map.styleUrl);
-  url.searchParams.set("key", siteConfig.map.key);
-
-  return url.toString();
-}

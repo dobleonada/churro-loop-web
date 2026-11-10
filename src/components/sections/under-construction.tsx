@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { PreviewGate } from "@/components/sections/preview-gate";
 import { LocaleSwitcher } from "@/components/ui/locale-switcher";
 import { Wordmark } from "@/components/ui/wordmark";
+import { BRAND_NAME } from "@/lib/config";
 import type { Locale } from "next-intl";
 import type { ImageSource } from "@/lib/media";
 
@@ -39,7 +40,7 @@ export async function UnderConstruction({
           />
         ) : (
           <p className="font-display text-hero-lead text-purple uppercase">
-            Churro Loop
+            {BRAND_NAME}
           </p>
         )}
 
