@@ -2,8 +2,13 @@
 
 import { useEffect, useRef } from "react";
 import maplibregl from "maplibre-gl";
-import { mapStyleUrl } from "@/lib/config";
-import { IBERIA_BOUNDS, type MapLocation } from "@/lib/locations";
+import { useLocale } from "next-intl";
+import { MAP_STYLE_PATH } from "@/lib/config";
+import {
+  IBERIA_BOUNDS,
+  PORTRAIT_BOUNDS,
+  type MapLocation,
+} from "@/lib/locations";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 /**
@@ -83,21 +88,23 @@ export default function StoreMapCanvas({
   locations: MapLocation[];
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const locale = useLocale();
 
   useEffect(() => {
     const container = containerRef.current;
 
     if (!container) return;
 
+    const [southWest, northEast] =
+      container.clientHeight > container.clientWidth
+        ? PORTRAIT_BOUNDS
+        : IBERIA_BOUNDS;
+
     const map = new maplibregl.Map({
       container,
-      style: mapStyleUrl(),
-      bounds: [IBERIA_BOUNDS[0].slice(), IBERIA_BOUNDS[1].slice()].flat() as [
-        number,
-        number,
-        number,
-        number,
-      ],
+      // The brand style lives in `public/`; MapLibre wants an absolute URL.
+      style: new URL(MAP_STYLE_PATH, window.location.origin).toString(),
+      bounds: [...southWest, ...northEast],
       fitBoundsOptions: { padding: FIT_PADDING },
       attributionControl: { compact: true },
       // The map sits mid-page, so it must not swallow the page scroll. A
@@ -118,6 +125,51 @@ export default function StoreMapCanvas({
     const enableScrollZoom = () => map.scrollZoom.enable();
     const disableScrollZoom = () => map.scrollZoom.disable();
 
+    map.on("load", () => {
+      // The pinned cities are already named by their purple label, so the
+      // basemap's own label for them would only peek out from behind the pin.
+      const pinned = [
+        "literal",
+        locations.map((location) => location.city.toUpperCase()),
+      ];
+
+      for (const layer of map.getStyle().layers) {
+        if (layer.type !== "symbol" || !layer.layout?.["text-field"]) continue;
+
+        // Place names in the page's language ("Sevilla", "Argel"), falling
+        // back to the Latin-script name and then to the local one.
+        map.setLayoutProperty(layer.id, "text-field", [
+          "coalesce",
+          ["get", `name:${locale}`],
+          ["get", "name:latin"],
+          ["get", "name"],
+        ]);
+
+        if (layer["source-layer"] === "place") {
+          const notPinned = [
+            "!",
+            [
+              "in",
+              ["upcase", ["coalesce", ["get", "name:es"], ["get", "name"]]],
+              pinned,
+            ],
+          ];
+          map.setFilter(
+            layer.id,
+            (layer.filter
+              ? ["all", layer.filter, notPinned]
+              : notPinned) as maplibregl.FilterSpecification
+          );
+        }
+      }
+
+      // The compact attribution starts expanded, which on a map this size is
+      // a white bar across the bottom. Collapse it to its "i" button.
+      container
+        .querySelector(".maplibregl-ctrl-attrib")
+        ?.classList.remove("maplibregl-compact-show");
+    });
+
     map.on("click", enableScrollZoom);
     container.addEventListener("mouseleave", disableScrollZoom);
 
@@ -135,7 +187,7 @@ export default function StoreMapCanvas({
       container.removeEventListener("mouseleave", disableScrollZoom);
       map.remove();
     };
-  }, [locations]);
+  }, [locations, locale]);
 
   // Sized with `h-full`, not `absolute inset-0`: MapLibre's stylesheet sets
   // `.maplibregl-map { position: relative }`, which would turn the latter into

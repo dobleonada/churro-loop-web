@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
-import { siteConfig } from "@/lib/config";
 import type { MapLocation } from "@/lib/locations";
 
 /**
@@ -36,9 +35,7 @@ const SHOW_MAP = true;
 export function StoreMap({ locations }: { locations: MapLocation[] }) {
   const t = useTranslations("Map");
 
-  // The key is in the guard too: without one MapTiler answers 403 and the
-  // frame would render as an empty yellow box, which is worse than no frame.
-  if (!SHOW_MAP || !siteConfig.map.key || locations.length === 0) return null;
+  if (!SHOW_MAP || locations.length === 0) return null;
 
   return (
     <div className="mt-6 px-5 pb-4 md:px-8 lg:mt-10 lg:pb-13">
