@@ -199,38 +199,38 @@ Decorative imagery is `aria-hidden` with `alt=""`. The mobile overlay traps
 focus, closes on Escape and locks background scroll. `prefers-reduced-motion` is
 honoured globally in `globals.css`.
 
-## Pending CMS changes from the 9 Nov 2026 email (`churro-loop-web-mgk`)
+## CMS changes from the 9 Nov 2026 email (`churro-loop-web-mgk`, applied)
 
-The front is ready for these; they are content, so they are made in Strapi
-(both locales unless noted), not in code:
+Applied through the Strapi REST API on 10 Nov 2026, in both locales:
 
-- Gallery: replace the 2nd image (`churro loop 02.png`, id 842, the churro
-  close-up) with the two ice-cream cups photo.
-- Every text field: "CHURRO LOOP" → "CHURROLOOP" (the trademark is one word):
-  `openings.title`, `loops.title`, `manifesto.text`, `franchiseCta.text`, the
-  `seo` description/keywords. Code-side strings already use `BRAND_NAME`.
-- `openings.intro`: "PRÓXIMAS APERTURAS" → "PRÓXIMAS APERTURAS LOCALES".
-- `openings.openings`: order BILBAO "ABRIL 2027" → MÁLAGA → VALENCIA → BURGOS,
-  the last three "MUY PRONTO 2027"; delete SEVILLA (its map pin goes with it).
-- VALENCIA opening image → the Ciudad de las Artes y las Ciencias one.
-- `contact.instagram` → `churroloopcompany` (a full or scheme-less URL also
-  works, `instagramUrl` normalises it).
+- Gallery: the 2nd image (the churro close-up, id 842) replaced by the two
+  ice-cream cups (`churro loop helados.png`, id 858).
+- "CHURRO LOOP" → "CHURROLOOP" in every text field; the manifesto sign-off is
+  "**ChurroLoop.**" as the Figma typesets it, and `seo.metaTitle` is
+  "ChurroLoop" (was the "Churo Loop" typo).
+- `openings.intro`: "PRÓXIMAS APERTURAS LOCALES" / "UPCOMING STORE OPENINGS".
+- `openings.openings`: BILBAO "ABRIL 2027" / "APRIL 2027", then MÁLAGA,
+  VALENCIA, BURGOS "MUY PRONTO 2027" / "COMING SOON 2027"; SEVILLA deleted.
+- VALENCIA image → `churro loop valencia 2027.png` (id 859, the Ciudad de las
+  Artes y las Ciencias).
+- `contact.instagram` → `churroloopcompany`.
+- `hero.cta.url` → `https://churroloop.com/carta-churroloop.pdf` (was a
+  `www.google.es` placeholder). The front still links to `MENU_PDF`: the
+  Cloudinary account answers 401 to PDF delivery, so the menu cannot live in
+  the CMS media library.
+- English only: `loops.title` translated ("FIND YOUR NEAREST CHURROLOOP"),
+  the `**` removed from `franchiseCta.title` and `contact.title`, and the two
+  loop photos added to `es` in September (ids 856, 857) added to `en` too.
 
 ## Known CMS copy issues (report to Doblemente, don't "fix" in code)
 
-Last checked against the live API on 7 Sep 2026. Doblemente fixed the Spanish
-copy that day (`hero.bodyText` and the "MY PRONTO" typo) and uploaded the OG
-image; **nothing in the English locale changed**, so everything below is still
-open.
+Last checked against the live API on 10 Nov 2026, after the changes above:
 
-- `openings.openings[0].title` (en) is "NOVIEMBRE 2026" — the only one of the
-  five left in Spanish; the other four say "COMING SOON".
-- `loops.title` (en) is "ENCUENTRA TU CHURRO LOOP MÁS CERCANO", untranslated.
-- Every image in the single type has an empty `alternativeText` (20 of 20).
-- `contact.instagram` is the placeholder handle `churroloopIG` (open point A6).
-- `franchiseCta.title` (en) and `contact.title` (en) are wrapped in `**` inside
-  plain-text fields. `SectionHeading` strips them so the asterisks never reach
-  the page, but the fields should be fixed in Strapi.
+- Every image in the single type has an empty `alternativeText` (the two
+  uploaded on 10 Nov included).
+- The manifesto copy differs slightly from the Figma ("El chocolate con
+  churro es una de ellas", no full stop, vs "churros … ellas."). Not part of
+  any request, so left as is.
 - The two Figma frames disagree on the contact address: the mobile one shows
   `info@churroloop.com`, the desktop one `marta@churroloop.com`. The desktop
   one is right — the mobile frame predates the 3 Sep 17:21 email that asked for
