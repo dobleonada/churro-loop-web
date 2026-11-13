@@ -1,3 +1,5 @@
+import type { Locale } from "next-intl";
+
 /**
  * Runtime configuration for everything the client wants "built but switched
  * off" (see section 8 of PLAN-CHURROLOOP.md). Reading it in one place keeps
@@ -32,11 +34,15 @@ export const BRAND_NAME = "ChurroLoop";
 export const COPYRIGHT_NOTICE = "ChurroLoop2026©";
 
 /**
- * The menu, as the client supplied it (`CartaChurroLoopWeb.pdf`). It is not in
- * the CMS — the hero `cta.url` field still holds a placeholder — so it is
- * served from `public/`. Replacing the menu means replacing that file.
+ * The menu, one PDF per locale, as the client supplied them on 13 Nov 2026
+ * (`CartaChurroLoopWeb_SP.pdf`, `CartaChurroLoopWeb_ENG.pdf`). They are not in
+ * the CMS — Cloudinary refuses to deliver PDFs — so they are served from
+ * `public/`. Replacing the menu means replacing those files.
  */
-export const MENU_PDF = "/carta-churroloop.pdf";
+export const MENU_PDF: Record<Locale, string> = {
+  es: "/carta-churroloop.pdf",
+  en: "/carta-churroloop-en.pdf",
+};
 
 /**
  * The brand map style (yellow land, cream water), served from `public/`. It is
@@ -59,7 +65,15 @@ export const siteConfig = {
   ),
   menu: {
     mode: parseMenuMode(process.env.NEXT_PUBLIC_MENU_MODE),
-    /** Where the button points in `link` mode. Defaults to the bundled PDF. */
-    url: process.env.NEXT_PUBLIC_MENU_URL || MENU_PDF,
+    /**
+     * Where the button points in `link` mode, overriding the bundled PDFs for
+     * every locale. Unset by default: see `menuUrl`.
+     */
+    url: process.env.NEXT_PUBLIC_MENU_URL || undefined,
   },
 } as const;
+
+/** The menu for a locale: `NEXT_PUBLIC_MENU_URL` if set, else its PDF. */
+export function menuUrl(locale: Locale): string {
+  return siteConfig.menu.url ?? MENU_PDF[locale];
+}

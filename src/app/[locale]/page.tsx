@@ -70,7 +70,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Hero hero={home.hero} />
+      <Hero hero={home.hero} locale={locale} />
       <PhotoStrip gallery={home.gallery} />
       <Manifesto manifesto={home.manifesto} />
       <UpcomingOpenings openings={home.openings} />

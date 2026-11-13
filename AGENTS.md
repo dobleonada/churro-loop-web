@@ -97,8 +97,10 @@ navigation labels, the menu open/close labels and the "coming soon" notice.
 Read through `src/lib/config.ts`, never `process.env` in a component. See
 `.env.example`. `NEXT_PUBLIC_MENU_MODE` (`link` | `soon` | `hidden`) drives the
 hero CTA. `link` is the default since the client sent the menu on 9 Nov 2026:
-"VER CARTA" opens `public/carta-churroloop.pdf` (`MENU_PDF` in
-`src/lib/config.ts`) in a new tab, unless `NEXT_PUBLIC_MENU_URL` overrides it.
+"VER CARTA" opens the menu PDF of the page locale in a new tab —
+`public/carta-churroloop.pdf` (es) or `public/carta-churroloop-en.pdf` (en),
+see `MENU_PDF` / `menuUrl` in `src/lib/config.ts` — unless
+`NEXT_PUBLIC_MENU_URL` overrides it for every locale.
 The CMS `hero.cta.url` is not read. An environment that sets
 `NEXT_PUBLIC_MENU_MODE=soon` keeps showing "Disponible muy pronto" instead;
 Vercel only defines `NEXT_PUBLIC_CMS_API_URL`, so it gets the defaults.
@@ -196,7 +198,8 @@ Anything the CMS does not serve goes in `public/` and is listed here:
 | Path | Status | Notes |
 |---|---|---|
 | `public/images/churro-marker.png` | present | 112×182 RGBA, `hero-churro.png` downscaled ×10 (12 kB instead of 750 kB). The map pin: the asset already leans ~19° right, which is the tilt the Figma frame shows, so it is placed unrotated. Its lower tip sits at 39%/88.5% of the box — that is the `TIP` constant in `store-map-canvas.tsx`. |
-| `public/carta-churroloop.pdf` | present | The menu, `CartaChurroLoopWeb.pdf` from the 9 Nov 2026 email (1.7 MB). Opened by the hero "VER CARTA" button; see `MENU_PDF`. |
+| `public/carta-churroloop.pdf` | present | The Spanish menu, `CartaChurroLoopWeb_SP.pdf` from the 13 Nov 2026 email (5.7 MB; replaced the 9 Nov version). Opened by the hero "VER CARTA" button on `/`; see `MENU_PDF`. |
+| `public/carta-churroloop-en.pdf` | present | The English menu, `CartaChurroLoopWeb_ENG.pdf` from the 13 Nov 2026 email (5.7 MB). Opened by "VIEW MENU" on `/en`. |
 | `public/images/hero-churro.png` | present | 1120×1815 RGBA. One asset for both breakpoints: desktop uses it as-is, mobile mirrors it horizontally (`-scale-x-100`). Scale and offsets in `src/components/sections/hero.tsx` were calibrated by matching the shaft width against the mockups; see the comment on `HeroChurro`. |
 | `public/og-image.png` | **not needed** | The CMS now serves `OG IMAGE.png` (1200×600) on `seo.metaImage`, so this fallback is dead code. `src/lib/seo.ts` still falls back to it if `metaImage` ever goes back to being a vector. |
 | `src/app/favicon.ico` | present | The brand "C" in purple on transparent, one 256×256 PNG inside the ICO. Still missing `apple-icon.png` (180×180) and hand-drawn 16/32 versions — the stroke is 17px of 256, i.e. ~1px once the browser scales it to a 16px tab. See `churro-loop-web-hcn.4`. |
