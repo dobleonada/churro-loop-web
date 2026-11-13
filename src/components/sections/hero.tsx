@@ -2,7 +2,8 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Wordmark } from "@/components/ui/wordmark";
 import { MenuSoonButton } from "@/components/sections/menu-soon-button";
-import { BRAND_NAME, siteConfig } from "@/lib/config";
+import type { Locale } from "next-intl";
+import { BRAND_NAME, menuUrl, siteConfig } from "@/lib/config";
 import { getImage } from "@/lib/media";
 import type { HeroDto } from "@/services/home/home.dto";
 
@@ -16,8 +17,8 @@ function normalizeUrl(url: string): string {
     : `https://${url}`;
 }
 
-function MenuCta({ cta }: { cta: HeroDto["cta"] }) {
-  const { mode, url } = siteConfig.menu;
+function MenuCta({ cta, locale }: { cta: HeroDto["cta"]; locale: Locale }) {
+  const { mode } = siteConfig.menu;
 
   if (mode === "hidden") return null;
 
@@ -25,7 +26,7 @@ function MenuCta({ cta }: { cta: HeroDto["cta"] }) {
     return (
       <Button
         as="a"
-        href={normalizeUrl(url)}
+        href={normalizeUrl(menuUrl(locale))}
         target="_blank"
         rel="noopener"
       >
@@ -83,7 +84,7 @@ function HeroChurro() {
   );
 }
 
-export function Hero({ hero }: { hero: HeroDto }) {
+export function Hero({ hero, locale }: { hero: HeroDto; locale: Locale }) {
   const wordmark = getImage(hero.media, BRAND_NAME);
 
   return (
@@ -115,7 +116,7 @@ export function Hero({ hero }: { hero: HeroDto }) {
         </p>
 
         <div className="mt-10 lg:mt-[4.75rem]">
-          <MenuCta cta={hero.cta} />
+          <MenuCta cta={hero.cta} locale={locale} />
         </div>
       </div>
     </section>
